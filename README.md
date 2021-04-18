@@ -5,4 +5,4 @@
 |ファイル名|説明|
 |:-|:-|
 |estatapi.py|モジュール|
-|sample_google.ipynb|estatapiモジュールの使用例（Google Colaboratory版）|
+|sample_google.ipynb|モジュールの使用例（Google Colaboratory版）|
