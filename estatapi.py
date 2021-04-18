@@ -7,7 +7,9 @@ import pandas
 
 class StatsData:
     """\
-    e-Stat-APIにより統計データを取得し、これを保持する。
+    このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。
+    
+    e-Stat-APIを介して統計データを取得し、これを保持する。
 
     Parameters
     ----------
@@ -59,7 +61,9 @@ class StatsData:
 
 class StatsDataForPandas(StatsData):
     """\
-    e-Stat-APIにより統計データを取得し、これを保持する。
+    このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。
+    
+    e-Stat-APIを介して統計データを取得し、これを保持する。
     当該個体 (instance) の `to_df` メソッドで`DataFrame`に変換できる。
 
     Parameters
