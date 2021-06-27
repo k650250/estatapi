@@ -1,5 +1,3 @@
--*- coding: utf8 -*-
-
 # estatapi
 **[政府統計の総合窓口（ｅ－Ｓｔａｔ）](https://www.e-stat.go.jp/)のAPI**を介して統計データを取得する為のPythonモジュールです。
 
