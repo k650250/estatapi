@@ -5,6 +5,8 @@ import urllib.request
 import json
 import pandas
 
+appId = str(None)
+
 class StatsData:
     """\
     このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。
@@ -35,9 +37,11 @@ class StatsData:
     >>> data = obj.data                     # 3. 取得した統計データの代入
     """
 
-    def __init__(self, url: str, appId: str, data: dict=None):
+    def __init__(self, url: str, appId: str=None, data: dict=None):
         self.url = url
         self.appId = appId
+        if appId is None:
+            self.appId = globals()['appId']
         self.data = data
         if data is None:
             self.load()
@@ -110,7 +114,7 @@ class StatsDataForPandas(StatsData):
     >>> df = pd.merge(df_vcode, df_vname).loc[:, columns]
     """
 
-    def __init__(self, url: str, appId: str, data: dict=None, names: dict=None):
+    def __init__(self, url: str, appId: str=None, data: dict=None, names: dict=None):
         super().__init__(url, appId, data)
         self.names = names
         if names is None:
