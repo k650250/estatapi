@@ -150,7 +150,7 @@ class StatsDataForPandas(StatsData):
         ----------
         names : dict, default None
             `DataFrame`の各値及び列名を変換する際に使用する置換辞書を指定する。
-            置換辞書が未指定 (`None`) の場合、当該個体の `names` プロペティの値を使用する。
+            置換辞書が未指定 (`None`) の場合、当該個体の `names` プロパティの値を使用する。
             置換辞書が空 (`{}`) の場合、`DataFrame`のデータ値及び列名を置換しない。
 
         Returns
@@ -175,7 +175,7 @@ class StatsDataForPandas(StatsData):
             置換対象`DataFrame`指定する。
         names : dict, default None
             置換辞書を指定する。
-            置換辞書が未指定 (`None`) の場合、当該個体の `names` プロペティの値を使用する。
+            置換辞書が未指定 (`None`) の場合、当該個体の `names` プロパティの値を使用する。
             置換辞書が空 (`{}`) の場合、`DataFrame`のデータ値を置換しない。
         inplace : bool, default False
             `False`（default）の場合、置換対象`DataFrame`（引数`df`の値）は変更されず、
@@ -204,7 +204,7 @@ class StatsDataForPandas(StatsData):
             置換対象`DataFrame`を指定する。
         names : dict, default None
             置換辞書を指定する。
-            置換辞書が未指定 (`None`) の場合、当該個体の `names` プロペティの値を使用する。
+            置換辞書が未指定 (`None`) の場合、当該個体の `names` プロパティの値を使用する。
             置換辞書が空 (`{}`) の場合、`DataFrame`の列名を置換しない。
         inplace : bool, default False
             `False`（default）の場合、置換対象`DataFrame`（引数`df`の値）は変更されず、
