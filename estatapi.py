@@ -1,11 +1,54 @@
 # -*- coding: utf-8; -*-
 
+import os
 import gzip
 import urllib.request
 import json
 import pandas
 
-appId = str(None)
+_cfgdir = os.path.join(os.path.expanduser("~"),
+                       "." + os.path.splitext(os.path.basename(__file__))[0])
+
+def init_appId():
+    """\
+    既定のアプリケーションIDの初期化を行う。
+    優先度は次の通り。
+    1. ホームディレクトリの「.estatapi」ディレクトリの「appId」ファイルの値
+    2. 環境変数「ESTATAPI_APP_ID」の値
+    """
+    global appId
+    
+    filepath = os.path.join(_cfgdir, "appId")
+    if os.path.isfile(filepath):
+        with open(filepath) as f:
+            appId = f.read()
+    else:
+        appId = os.getenv("ESTATAPI_APP_ID", str(None))
+    
+def set_appId(appId: str=None):
+    """\
+    既定のアプリケーションIDを設定する。
+    
+    Parameters
+    ----------
+    appId : str
+        APIのアプリケーションIDを指定する。
+        省略した場合は、既定のアプリケーションIDを削除する。
+    """
+    filepath = os.path.join(_cfgdir, "appId")
+    
+    if appId:
+        if not os.path.isdir(_cfgdir):
+            os.mkdir(_cfgdir)
+        with open(filepath, 'w') as f:
+            f.write(appId)
+    else:
+        if os.path.isfile(filepath):
+            os.remove(filepath)
+    
+    init_appId()
+    
+init_appId()
 
 class StatsData:
     """\
