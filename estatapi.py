@@ -19,6 +19,7 @@ def init_appId():
     global appId
     
     filepath = os.path.join(_cfgdir, "appId")
+    
     if os.path.isfile(filepath):
         with open(filepath) as f:
             appId = f.read()
@@ -27,13 +28,13 @@ def init_appId():
     
 def set_appId(appId: str=None):
     """\
-    既定のアプリケーションIDを設定する。
+    既定のアプリケーションIDの設定、又は設定の解除を行う。
     
     Parameters
     ----------
     appId : str
         APIのアプリケーションIDを指定する。
-        省略した場合は、既定のアプリケーションIDを削除する。
+        省略した場合は、既定のアプリケーションIDの設定を解除する。
     """
     filepath = os.path.join(_cfgdir, "appId")
     
