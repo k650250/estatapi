@@ -13,3 +13,4 @@
 |2021-04-18|初版。|
 |2021-06-27|予め`estatapi.appId`にアプリケーションIDを指定しておけば、`estatapi.StatsData`系列の第2引数を省略することができるようにした。|
 |2021-07-01|<ol><li>`estatapi.StatsData`系列の第2引数の値</li><li>ホームディレクトリの「.estatapi」ディレクトリの「appId」ファイルの値</li><li>環境変数「ESTATAPI_APP_ID」の値</li></ol>の優先度でアプリケーションIDを読み込むようにした。<br />2に関しては、`estatapi.set_appId`関数を介して設定が可能。|
+|2023-01-01|`to_df`を`to_frame`にメソッド名変更。`to_df`を`to_frame`の別名とした。|
