@@ -4,14 +4,13 @@ import os
 import gzip
 import urllib.request
 import json
-import pandas
+import pandas as pd
 
 _cfgdir = os.path.join(os.path.expanduser("~"),
                        "." + os.path.splitext(os.path.basename(__file__))[0])
 
 def init_appId():
-    """\
-    既定のアプリケーションIDの初期化を行う。
+    """既定のアプリケーションIDの初期化を行う。
     優先度は次の通り。
     1. ホームディレクトリの「.estatapi」ディレクトリの「appId」ファイルの値
     2. 環境変数「ESTATAPI_APP_ID」の値
@@ -27,8 +26,7 @@ def init_appId():
         appId = os.getenv("ESTATAPI_APP_ID", str(None))
     
 def set_appId(appId: str=None):
-    """\
-    既定のアプリケーションIDの設定、又は設定の解除を行う。
+    """既定のアプリケーションIDの設定、又は設定の解除を行う。
     
     Parameters
     ----------
@@ -52,8 +50,7 @@ def set_appId(appId: str=None):
 init_appId()
 
 class StatsData:
-    """\
-    このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。
+    """このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。
     
     e-Stat-APIを介して統計データを取得し、これを保持する。
 
@@ -91,8 +88,7 @@ class StatsData:
             self.load()
 
     def load(self):
-        """\
-        e-Stat-APIにより統計データを取得し、
+        """e-Stat-APIにより統計データを取得し、
         これを当該個体の `data` プロパティに登録する。
         """
         url = self.url
@@ -108,11 +104,10 @@ class StatsData:
             self.data = json.loads(gzipFile.read().decode('utf8'))
 
 class StatsDataForPandas(StatsData):
-    """\
-    このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。
+    """このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。
     
     e-Stat-APIを介して統計データを取得し、これを保持する。
-    当該個体 (instance) の `to_df` メソッドで`DataFrame`に変換できる。
+    当該個体 (instance) の `to_frame` メソッドで`DataFrame`に変換できる。
 
     Parameters
     ----------
@@ -133,14 +128,14 @@ class StatsDataForPandas(StatsData):
     --------
     個体生成から、置換済DataFrameの取得迄を一気通貫で行う。
 
-    >>> df = StatsDataForPandas('url', 'appId').to_df()
+    >>> df = StatsDataForPandas('url', 'appId').to_frame()
 
     上記を最大6段階の手続きに分割できる。
 
     >>> obj = StatsDataForPandas('url', 'appId', data={}, names={})  # 1. 個体生成
     >>> obj.load()                          # 2. APIにより統計データを取得
     >>> obj.make_names()                    # 3. 置換辞書を生成
-    >>> df1 = obj.to_df(names={})           # 4. 未置換DataFrameを取得
+    >>> df1 = obj.to_frame(names={})        # 4. 未置換DataFrameを取得
     >>> df2 = obj.code2name(df1)            # 5. code形式からname形式にデータ値置換
     >>> df3 = obj.id2name(df2)              # 6. id形式からname形式に列名置換
 
@@ -149,8 +144,8 @@ class StatsDataForPandas(StatsData):
     >>> import numpy as np
     >>> import pandas as pd
     >>> obj = StatsDataForPandas('url', 'appId')
-    >>> df_vcode = obj.to_df(names={})      # 未置換DataFrameを取得
-    >>> df_vname = obj.to_df()              # 置換済DataFrameを取得
+    >>> df_vcode = obj.to_frame(names={})   # 未置換DataFrameを取得
+    >>> df_vname = obj.to_frame()           # 置換済DataFrameを取得
     >>> columns = np.empty(len(df_vcode.columns)*2, dtype=np.object)
     >>> columns[0::2] = df_vcode.columns
     >>> columns[1::2] = df_vname.columns
@@ -165,8 +160,7 @@ class StatsDataForPandas(StatsData):
             self.make_names()
 
     def make_names(self):
-        """\
-        当該個体の `data` プロパティの値を元に置換辞書 (`names`) を生成し、
+        """当該個体の `data` プロパティの値を元に置換辞書 (`names`) を生成し、
         これを同個体の `names` プロパティに登録する。
         但し、同個体の `data` プロパティの値が空 (`{}`) の場合、処理を行わない。
         """
@@ -184,8 +178,30 @@ class StatsDataForPandas(StatsData):
                 for cat in obj['CLASS']:
                     self.names['code'][obj_id][cat['@code']] = cat['@name']
 
-    def to_df(self, names: dict=None) -> pandas.core.frame.DataFrame:
-        """\
+    def to_frame(self, names: dict=None) -> "pandas.core.frame.DataFrame":
+        """当該個体の `data` プロパティの値を元に、`DataFrame`を生成する。
+        その際、指定された置換辞書 (`names`) の値を元に、
+        `DataFrame`のデータ値及び列名をcode/id形式からname形式に置換する。
+
+        Parameters
+        ----------
+        names : dict, default None
+            `DataFrame`の各値及び列名を変換する際に使用する置換辞書を指定する。
+            置換辞書が未指定 (`None`) の場合、当該個体の `names` プロパティの値を使用する。
+            置換辞書が空 (`{}`) の場合、`DataFrame`のデータ値及び列名を置換しない。
+
+        Returns
+        -------
+        pd.DataFrame
+            `DataFrame`が返却される。
+        """
+        df = pd.json_normalize(self.data['GET_STATS_DATA']['STATISTICAL_DATA']['DATA_INF']['VALUE'])
+        self.code2name(df, names, inplace=True)
+        self.id2name(df, names, inplace=True)
+        return df
+
+    def to_df(self, names: dict=None) -> "pandas.core.frame.DataFrame":
+        """`to_frame`メソッドの別名。
         当該個体の `data` プロパティの値を元に、`DataFrame`を生成する。
         その際、指定された置換辞書 (`names`) の値を元に、
         `DataFrame`のデータ値及び列名をcode/id形式からname形式に置換する。
@@ -202,14 +218,10 @@ class StatsDataForPandas(StatsData):
         pd.DataFrame
             `DataFrame`が返却される。
         """
-        df = pandas.json_normalize(self.data['GET_STATS_DATA']['STATISTICAL_DATA']['DATA_INF']['VALUE'])
-        self.code2name(df, names, inplace=True)
-        self.id2name(df, names, inplace=True)
-        return df
+        return self.to_frame(names)
 
     def code2name(self, df: pandas.core.frame.DataFrame, names: dict=None, inplace: bool=False) -> pandas.core.frame.DataFrame:
-        """\
-        指定された置換辞書 (`names`) の `code` キーの値を元に、
+        """指定された置換辞書 (`names`) の `code` キーの値を元に、
         `DataFrame`のデータ値をcode形式からname形式に置換する。
         但し、`DataFrame`の列名がid形式でなければならない。
 
@@ -238,8 +250,7 @@ class StatsDataForPandas(StatsData):
             return df.replace(names['code'], inplace=inplace)
 
     def id2name(self, df: pandas.core.frame.DataFrame, names: dict=None, inplace: bool=False) -> pandas.core.frame.DataFrame:
-        """\
-        指定された置換辞書 (`names`) の `id` キーの値を元に、
+        """指定された置換辞書 (`names`) の `id` キーの値を元に、
         `DataFrame`の列名をid形式からname形式に置換する。
 
         Parameters
