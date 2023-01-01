@@ -220,7 +220,7 @@ class StatsDataForPandas(StatsData):
         """
         return self.to_frame(names)
 
-    def code2name(self, df: pandas.core.frame.DataFrame, names: dict=None, inplace: bool=False) -> pandas.core.frame.DataFrame:
+    def code2name(self, df: pandas.core.frame.DataFrame, names: dict=None, inplace: bool=False) -> "pandas.core.frame.DataFrame":
         """指定された置換辞書 (`names`) の `code` キーの値を元に、
         `DataFrame`のデータ値をcode形式からname形式に置換する。
         但し、`DataFrame`の列名がid形式でなければならない。
@@ -249,7 +249,7 @@ class StatsDataForPandas(StatsData):
         if 'code' in names:
             return df.replace(names['code'], inplace=inplace)
 
-    def id2name(self, df: pandas.core.frame.DataFrame, names: dict=None, inplace: bool=False) -> pandas.core.frame.DataFrame:
+    def id2name(self, df: pandas.core.frame.DataFrame, names: dict=None, inplace: bool=False) -> "pandas.core.frame.DataFrame":
         """指定された置換辞書 (`names`) の `id` キーの値を元に、
         `DataFrame`の列名をid形式からname形式に置換する。
 
